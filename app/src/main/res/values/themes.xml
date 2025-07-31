@@ -1,0 +1,10 @@
+<resources>
+    <style name="Base.Theme.Nested" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorSecondary">@color/primary_color</item>
+        <item name="colorTertiary">@color/primary_color</item>
+        <item name="android:colorBackground">@color/color_background</item>
+    </style>
+
+    <style name="Theme.Nested" parent="Base.Theme.Nested" />
+</resources>
