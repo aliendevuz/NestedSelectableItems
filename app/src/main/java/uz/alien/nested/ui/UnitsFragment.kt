@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uz.alien.nested.adapter.UnitAdapter
 import uz.alien.nested.databinding.FragmentUnitsBinding
+import uz.alien.nested.model.PartUIState
 import uz.alien.nested.utils.AutoLayoutManager
-import uz.alien.nested.utils.DragSelectRecyclerView
 import uz.alien.nested.utils.MarginItemDecoration
 import uz.alien.nested.utils.SelectableRecyclerView
 
@@ -32,12 +30,11 @@ class UnitsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        part = arguments?.getParcelable("arg_part")
+        part = arguments?.getParcelable(ARG_PART)
         _binding = FragmentUnitsBinding.inflate(layoutInflater, container, false)
 
         adapter = UnitAdapter()
         binding.rvSelectableUnits.layoutManager = AutoLayoutManager(requireContext(), 3)
-//        binding.rvSelectableUnits.layoutManager = GridLayoutManager(requireContext(), 3, RecyclerView.HORIZONTAL, false)
         binding.rvSelectableUnits.adapter = adapter
         binding.rvSelectableUnits.addItemDecoration(
             MarginItemDecoration(

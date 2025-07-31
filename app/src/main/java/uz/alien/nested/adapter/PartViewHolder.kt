@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import uz.alien.nested.R
 import uz.alien.nested.databinding.ItemPartBinding
-import uz.alien.nested.ui.PartUIState
+import uz.alien.nested.model.PartUIState
 
 class PartViewHolder(
     itemView: View,
@@ -16,7 +16,7 @@ class PartViewHolder(
     private val binding = ItemPartBinding.bind(itemView)
 
     fun bind(part: PartUIState, isSelected: Boolean) {
-        binding.tvCollectionNumber.text = part.title
+        binding.tvPartNumber.text = part.title
 
         val isAnyUnitSelected = part.units.any { it.isSelected }
 
@@ -29,7 +29,7 @@ class PartViewHolder(
 
         itemView.setBackgroundResource(backgroundRes)
 
-        binding.tvCollectionNumber.setTextColor(
+        binding.tvPartNumber.setTextColor(
             resources.getColor(
                 if (isSelected) R.color.color_background else R.color.primary_color,
                 resources.newTheme()

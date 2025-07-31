@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import uz.alien.nested.R
 import uz.alien.nested.databinding.ItemUnitBinding
-import uz.alien.nested.ui.UnitUIState
+import uz.alien.nested.model.UnitUIState
 
 class UnitViewHolder(
     itemView: View,

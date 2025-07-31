@@ -3,15 +3,15 @@ package uz.alien.nested.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import uz.alien.nested.model.PartUIState
-import uz.alien.nested.ui.UnitsFragment
+import uz.alien.nested.model.CollectionUIState
+import uz.alien.nested.ui.PartsFragment
 
-class PartsPagerAdapter(
+class CollectionsPagerAdapter(
     fa: FragmentActivity,
-    private val parts: List<PartUIState>
+    private val collections: List<CollectionUIState>
 ) : FragmentStateAdapter(fa) {
-    override fun getItemCount() = parts.size
+    override fun getItemCount() = collections.size
     override fun createFragment(position: Int): Fragment {
-        return UnitsFragment.newInstance(parts[position])
+        return PartsFragment.newInstance(collections[position])
     }
 }

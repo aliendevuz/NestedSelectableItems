@@ -1,7 +1,7 @@
 package uz.alien.nested.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import uz.alien.nested.ui.PartUIState
+import uz.alien.nested.model.PartUIState
 
 class PartDiffCallback : DiffUtil.ItemCallback<PartUIState>() {
     override fun areItemsTheSame(old: PartUIState, new: PartUIState) = old.index == new.index

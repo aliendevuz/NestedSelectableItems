@@ -8,7 +8,7 @@
     tools:context=".ui.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvParts"
+        android:id="@+id/rvCollections"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vpUnits"
-        app:layout_constraintTop_toBottomOf="@id/rvParts"
+        android:id="@+id/vpParts"
+        app:layout_constraintTop_toBottomOf="@id/rvCollections"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
@@ -33,7 +33,7 @@
 
     <LinearLayout
         android:id="@+id/llButtons"
-        app:layout_constraintTop_toBottomOf="@+id/vpUnits"
+        app:layout_constraintTop_toBottomOf="@+id/vpParts"
         app:layout_constraintBottom_toTopOf="@+id/bStart"
         android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="20dp"

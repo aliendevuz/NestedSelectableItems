@@ -1,14 +1,11 @@
 package uz.alien.nested.ui
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import uz.alien.nested.model.PartUIState
+import uz.alien.nested.model.UnitUIState
 import kotlin.random.Random.Default.nextBoolean
 
 class MainViewModel : ViewModel() {
@@ -18,8 +15,6 @@ class MainViewModel : ViewModel() {
 
     private val _selectedPartIndex = MutableStateFlow(5)
     val selectedPartIndex: StateFlow<Int> = _selectedPartIndex
-
-    private val animationScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     init {
         val dummyParts = List(6) { partIndex ->
@@ -61,46 +56,30 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun selectAll(randomOrder: Boolean = true) {
-        val unitIndices = (0..29).toList().let { if (randomOrder) it.shuffled() else it }
-        animationScope.launch {
-            unitIndices.forEachIndexed { index, unitId ->
-                selectUnit(unitId)
-                delay(10L)
-            }
+    fun selectAll() {
+        for (i in 0..parts.value[0].units.size) {
+            selectUnit(i)
         }
     }
 
-    fun clearAll(randomOrder: Boolean = true) {
-        val unitIndices = (0..29).toList().let { if (randomOrder) it.shuffled() else it }
-        animationScope.launch {
-            unitIndices.forEachIndexed { index, unitId ->
-                unselectUnit(unitId)
-                delay(10L)
-            }
+    fun clearAll() {
+        for (i in 0..parts.value[0].units.size) {
+            unselectUnit(i)
         }
     }
 
-    fun invertAll(randomOrder: Boolean = true) {
-        val unitIndices = (0..29).toList().let { if (randomOrder) it.shuffled() else it }
-        animationScope.launch {
-            unitIndices.forEachIndexed { index, unitId ->
-                toggleUnitSelection(unitId)
-                delay(10L)
-            }
+    fun invertAll() {
+        for (i in 0..parts.value[0].units.size) {
+            toggleUnitSelection(i)
         }
     }
 
-    fun randomSelect(randomOrder: Boolean = true) {
-        val unitIndices = (0..29).toList().let { if (randomOrder) it.shuffled() else it }
-        animationScope.launch {
-            unitIndices.forEachIndexed { index, unitId ->
-                if (nextBoolean()) {
-                    selectUnit(unitId)
-                } else {
-                    unselectUnit(unitId)
-                }
-                delay(10L)
+    fun randomSelect() {
+        for (i in 0..parts.value[0].units.size) {
+            if (nextBoolean()) {
+                selectUnit(i)
+            } else {
+                unselectUnit(i)
             }
         }
     }

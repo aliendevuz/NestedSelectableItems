@@ -1,4 +1,4 @@
-package uz.alien.nested.ui
+package uz.alien.nested.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

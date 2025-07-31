@@ -15,7 +15,7 @@
         android:layout_height="48dp">
 
         <TextView
-            android:id="@+id/tvCollectionNumber"
+            android:id="@+id/tvPartNumber"
             android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"

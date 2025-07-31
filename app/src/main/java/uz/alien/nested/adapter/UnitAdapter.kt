@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import uz.alien.nested.R
-import uz.alien.nested.ui.UnitUIState
+import uz.alien.nested.model.UnitUIState
 
 class UnitAdapter : ListAdapter<UnitUIState, UnitViewHolder>(UnitDiffCallback()) {
 
