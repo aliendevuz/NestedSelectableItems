@@ -45,42 +45,42 @@ class UnitsFragment : Fragment() {
             )
         )
 
-        binding.rvSelectableUnits.selectListener = object : SelectableRecyclerView.OnUnitSelectListener {
-            override fun onSingleTap(position: Int) {
-                viewModel.toggleUnitSelection(position)
-                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-                Log.d("@@@@", "unit: $position")
-            }
+//        binding.rvSelectableUnits.selectListener = object : SelectableRecyclerView.OnUnitSelectListener {
+//            override fun onSingleTap(position: Int) {
+//                viewModel.toggleUnitSelection(position)
+//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
+//                Log.d("@@@@", "unit: $position")
+//            }
+//
+//            override fun onLongPress(position: Int) {
+//                val isSelected = viewModel.isUnitSelected(position)
+//                if (isSelected) {
+//                    viewModel.unselectUnit(position)
+//                } else {
+//                    viewModel.selectUnit(position)
+//                }
+//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
+//                Log.d("@@@@", "unit: $position")
+//                binding.rvSelectableUnits.setSelection(isSelected)
+//            }
+//
+//            override fun onMove(position: Int, selection: Boolean) {
+//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
+//                Log.d("@@@@", "unit: $position")
+//                if (selection) {
+//                    viewModel.selectUnit(position)
+//                } else {
+//                    viewModel.unselectUnit(position)
+//                }
+//            }
+//        }
 
-            override fun onLongPress(position: Int) {
-                val isSelected = viewModel.isUnitSelected(position)
-                if (isSelected) {
-                    viewModel.unselectUnit(position)
-                } else {
-                    viewModel.selectUnit(position)
-                }
-                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-                Log.d("@@@@", "unit: $position")
-                binding.rvSelectableUnits.setSelection(isSelected)
-            }
-
-            override fun onMove(position: Int, selection: Boolean) {
-                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-                Log.d("@@@@", "unit: $position")
-                if (selection) {
-                    viewModel.selectUnit(position)
-                } else {
-                    viewModel.unselectUnit(position)
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.parts.collectLatest { parts ->
-                val currentPart = parts.find { it.index == part?.index }
-                currentPart?.units?.let { adapter.submitList(it) }
-            }
-        }
+//        lifecycleScope.launch {
+//            viewModel.parts.collectLatest { parts ->
+//                val currentPart = parts.find { it.index == part?.index }
+//                currentPart?.units?.let { adapter.submitList(it) }
+//            }
+//        }
 
         return binding.root
     }

@@ -18,7 +18,7 @@ class PartViewHolder(
     fun bind(part: PartUIState, isSelected: Boolean) {
         binding.tvPartNumber.text = part.title
 
-        val isAnyUnitSelected = part.units.any { it.isSelected }
+        val isAnyUnitSelected = true//part.units.any { it.isSelected }
 
         val backgroundRes = when {
             isSelected && isAnyUnitSelected -> R.drawable.background_part_selected_current
@@ -37,7 +37,7 @@ class PartViewHolder(
         )
 
         itemView.setOnClickListener {
-            onClick(part.index)
+            onClick(part.id)
         }
     }
 }

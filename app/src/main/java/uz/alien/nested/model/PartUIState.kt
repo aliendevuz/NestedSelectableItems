@@ -5,7 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PartUIState(
-    val index: Int,
+    val id: Int,
     val title: String,
-    val units: List<UnitUIState>
-): Parcelable
+    val collectionId: Int,
+    val unitCount: Int,
+    val isSelected: Boolean = false,
+    val isCurrent: Boolean = false,
+    val selectedUnitCount: Int = 0
+) : Parcelable

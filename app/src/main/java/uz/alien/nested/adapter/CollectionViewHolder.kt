@@ -19,7 +19,7 @@ class CollectionViewHolder(
     fun bind(collection: CollectionUIState, isSelected: Boolean) {
         binding.tvCollectionNumber.text = collection.title
 
-        val isAnyUnitSelected = collection.parts.any { it.units.any { it1 -> it1.isSelected } }
+        val isAnyUnitSelected = true//collection.parts.any { it.units.any { it1 -> it1.isSelected } }
 
         val backgroundRes = when {
             isSelected && isAnyUnitSelected -> R.drawable.background_collection_selected_current
@@ -38,7 +38,7 @@ class CollectionViewHolder(
         )
 
         itemView.setOnClickListener {
-            onClick(collection.index)
+            onClick(collection.id)
         }
     }
 }

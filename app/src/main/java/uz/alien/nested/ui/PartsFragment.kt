@@ -36,47 +36,42 @@ class PartsFragment : Fragment() {
         collection = arguments?.getParcelable(ARG_COLLECTION)
         _binding = FragmentPartsBinding.inflate(layoutInflater, container, false)
 
-        partAdapter = PartAdapter(resources) { selectedIndex ->
-            viewModel.setSelectedPart(selectedIndex)
-        }
+//        partAdapter = PartAdapter(resources) { selectedIndex ->
+//            viewModel.setSelectedPart(selectedIndex)
+//        }
 
-        binding.vpUnits.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                viewModel.setSelectedPart(position)
-            }
-        })
+//        binding.vpUnits.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+//            override fun onPageSelected(position: Int) {
+//                viewModel.setSelectedPart(position)
+//            }
+//        })
 
-        lifecycleScope.launch {
-            viewModel.parts.collectLatest { parts ->
-                partAdapter.submitList(parts)
-                if (binding.vpUnits.adapter == null) {
-                    partsPagerAdapter = PartsPagerAdapter(requireActivity(), parts)
-                    binding.vpUnits.adapter = partsPagerAdapter
-                    binding.vpUnits.offscreenPageLimit = parts.size
-                }
-                if (binding.rvParts.adapter == null) {
-                    binding.rvParts.layoutManager = AutoLayoutManager(requireContext(), parts.size)
-                    binding.rvParts.addItemDecoration(
-                        MarginItemDecoration(
-                            3.2F,
-                            resources,
-                            parts.size,
-                            true
-                        )
-                    )
-                    binding.rvParts.adapter = partAdapter
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            var isFirst = true
-            viewModel.selectedPartIndex.collect { selectedIndex ->
-                partAdapter.selectedIndex = selectedIndex
-                binding.vpUnits.setCurrentItem(selectedIndex, !isFirst)
-                isFirst = false
-            }
-        }
+//        lifecycleScope.launch {
+//            viewModel.parts.collectLatest { parts ->
+//                partAdapter.submitList(parts)
+//                if (binding.vpUnits.adapter == null) {
+//                    partsPagerAdapter = PartsPagerAdapter(requireActivity(), parts)
+//                    binding.vpUnits.adapter = partsPagerAdapter
+//                    binding.vpUnits.offscreenPageLimit = parts.size
+//                }
+//                if (binding.rvParts.adapter == null) {
+//                    binding.rvParts.layoutManager = AutoLayoutManager(requireContext(), parts.size)
+//                    binding.rvParts.addItemDecoration(
+//                        MarginItemDecoration(3.2F, resources, parts.size, true)
+//                    )
+//                    binding.rvParts.adapter = partAdapter
+//                }
+//            }
+//        }
+//
+//        lifecycleScope.launch {
+//            var isFirst = true
+//            viewModel.selectedPartIndex.collect { selectedIndex ->
+//                partAdapter.selectedIndex = selectedIndex
+//                binding.vpUnits.setCurrentItem(selectedIndex, !isFirst)
+//                isFirst = false
+//            }
+//        }
 
         return binding.root
     }
