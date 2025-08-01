@@ -38,6 +38,22 @@ class MainViewModelTest {
     }
 
     @Test
+    fun `Shunchaki test qilib ko'rish uchun yozib ko'ramiz`() = runTest {
+
+        fun add(a: Int, b: Int): Int {
+            return a + b
+        }
+
+        val a = 5
+        val b = 7
+
+        val result = add(a, b)
+        val actuallyResult = a + b
+
+        assertEquals(result, actuallyResult)
+    }
+
+    @Test
     fun `toggleUnitSelection should toggle isSelected and update selectedUnitCount`() = runTest {
         val collectionId = 0
         val partId = 0
