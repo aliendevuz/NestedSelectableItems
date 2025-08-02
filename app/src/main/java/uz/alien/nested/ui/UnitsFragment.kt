@@ -1,7 +1,7 @@
 package uz.alien.nested.ui
 
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,67 +22,65 @@ class UnitsFragment : Fragment() {
     private var _binding: FragmentUnitsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
-    private lateinit var adapter: UnitAdapter
-    private var part: PartUIState? = null
+
+    private lateinit var unitAdapter: UnitAdapter
+    private lateinit var part: PartUIState
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        part = arguments?.getParcelable(ARG_PART)
+
+        part = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(ARG_PART, PartUIState::class.java)!!
+        } else {
+            arguments?.getParcelable(ARG_PART)!!
+        }
+
         _binding = FragmentUnitsBinding.inflate(layoutInflater, container, false)
 
-        adapter = UnitAdapter()
-        binding.rvSelectableUnits.layoutManager = AutoLayoutManager(requireContext(), 3)
-        binding.rvSelectableUnits.adapter = adapter
-        binding.rvSelectableUnits.addItemDecoration(
-            MarginItemDecoration(
-                3.2F,
-                resources,
-                3,
-                true
-            )
-        )
-
-//        binding.rvSelectableUnits.selectListener = object : SelectableRecyclerView.OnUnitSelectListener {
-//            override fun onSingleTap(position: Int) {
-//                viewModel.toggleUnitSelection(position)
-//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-//                Log.d("@@@@", "unit: $position")
-//            }
-//
-//            override fun onLongPress(position: Int) {
-//                val isSelected = viewModel.isUnitSelected(position)
-//                if (isSelected) {
-//                    viewModel.unselectUnit(position)
-//                } else {
-//                    viewModel.selectUnit(position)
-//                }
-//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-//                Log.d("@@@@", "unit: $position")
-//                binding.rvSelectableUnits.setSelection(isSelected)
-//            }
-//
-//            override fun onMove(position: Int, selection: Boolean) {
-//                Log.d("@@@@", "part: ${viewModel.selectedPartIndex.value}")
-//                Log.d("@@@@", "unit: $position")
-//                if (selection) {
-//                    viewModel.selectUnit(position)
-//                } else {
-//                    viewModel.unselectUnit(position)
-//                }
-//            }
-//        }
-
-//        lifecycleScope.launch {
-//            viewModel.parts.collectLatest { parts ->
-//                val currentPart = parts.find { it.index == part?.index }
-//                currentPart?.units?.let { adapter.submitList(it) }
-//            }
-//        }
+        initViews()
 
         return binding.root
+    }
+
+    private fun initViews() {
+
+        unitAdapter = UnitAdapter()
+
+        val spanCount = if (part.unitCount == 20) 2 else 3
+        binding.rvSelectableUnits.layoutManager = AutoLayoutManager(requireContext(), spanCount)
+        binding.rvSelectableUnits.addItemDecoration(
+            MarginItemDecoration(3.2F, resources, part.unitCount, true)
+        )
+        binding.rvSelectableUnits.adapter = unitAdapter
+
+        binding.rvSelectableUnits.selectListener = object : SelectableRecyclerView.OnUnitSelectListener {
+
+            override fun onSingleTap(position: Int) {
+                viewModel.toggleUnitSelection(position)
+            }
+
+            override fun onLongPress(position: Int) {
+                binding.rvSelectableUnits.setSelection(viewModel.isUnitSelected(position))
+                viewModel.toggleUnitSelection(position)
+            }
+
+            override fun onMove(position: Int, selection: Boolean) {
+                if (selection) {
+                    viewModel.selectUnit(position)
+                } else {
+                    viewModel.unselectUnit(position)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.unitFlows[part.collectionId][part.id].collectLatest { units ->
+                unitAdapter.submitList(units)
+            }
+        }
     }
 
     override fun onDestroyView() {

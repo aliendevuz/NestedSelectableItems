@@ -2,36 +2,38 @@ package uz.alien.nested.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import uz.alien.nested.model.CollectionUIState
 import uz.alien.nested.model.PartUIState
 import uz.alien.nested.model.SelectedUnit
 import uz.alien.nested.model.UnitUIState
+import uz.alien.nested.utils.Logger
 import kotlin.random.Random.Default.nextBoolean
 
 class MainViewModel : ViewModel() {
-    private val _collectionsFlow = MutableStateFlow(
-        listOf(
-            CollectionUIState(id = 0, title = "Beginner", partCount = 4, unitCount = 20),
-            CollectionUIState(id = 1, title = "Essential", partCount = 6, unitCount = 30)
-        )
+
+    private val collections = listOf(
+        CollectionUIState(id = 0, title = "Beginner", partCount = 4, unitCount = 20, isCurrent = true),
+        CollectionUIState(id = 1, title = "Essential", partCount = 6, unitCount = 30)
     )
+
+    private val _collectionsFlow = MutableStateFlow(collections)
     val collectionsFlow: StateFlow<List<CollectionUIState>> = _collectionsFlow.asStateFlow()
 
-    private val partsFlows: MutableList<MutableStateFlow<List<PartUIState>>> = mutableListOf()
-    private val unitFlows: MutableList<List<MutableStateFlow<List<UnitUIState>>>> = mutableListOf()
+    private var currentCollection = 0
+    private val currentParts: MutableMap<Int, Int> = mutableMapOf()
+
+    val partsFlows: MutableList<MutableStateFlow<List<PartUIState>>> = mutableListOf()
+    val unitFlows: MutableList<List<MutableStateFlow<List<UnitUIState>>>> = mutableListOf()
 
     init {
-        var partId = 0
-        var unitId = 0
         _collectionsFlow.value.forEachIndexed { collectionIndex, collection ->
+            var partId = 0
             val parts = List(collection.partCount) {
                 PartUIState(
                     id = partId++,
@@ -43,6 +45,7 @@ class MainViewModel : ViewModel() {
             partsFlows.add(MutableStateFlow(parts))
             unitFlows.add(
                 List(collection.partCount) { partIndex ->
+                    var unitId = 0
                     MutableStateFlow(
                         List(collection.unitCount) {
                             UnitUIState(
@@ -59,14 +62,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun getPartsFlow(collectionId: Int): StateFlow<List<PartUIState>> {
-        return partsFlows.getOrNull(collectionId) ?: MutableStateFlow(emptyList())
-    }
-
-    fun getUnitsFlow(collectionId: Int, partId: Int): StateFlow<List<UnitUIState>> {
-        return unitFlows.getOrNull(collectionId)?.getOrNull(partId) ?: MutableStateFlow(emptyList())
-    }
-
     fun setCurrentCollection(collectionId: Int) {
         _collectionsFlow.update { collections ->
             collections.map { collection ->
@@ -74,173 +69,154 @@ class MainViewModel : ViewModel() {
                 else collection.copy(isCurrent = false)
             }
         }
-        setCurrentPart(collectionId, 0)
+        currentCollection = collectionId
+    }
+
+    fun setCurrentPart(partId: Int) {
+        val collectionId = currentCollection
+        partsFlows[collectionId].update { parts ->
+            parts.map { part ->
+                part.copy(isCurrent = part.id == partId)
+            }
+        }
+        currentParts[collectionId] = partId
+        Logger.d("MainViewModel", "setCurrentPart: $partId")
+        Logger.d("MainViewModel", partsFlows.joinToString { "Part: ${it.value.joinToString { it.isCurrent.toString() }}" })
     }
 
     fun setCurrentPart(collectionId: Int, partId: Int) {
-        partsFlows.getOrNull(collectionId)?.update { parts ->
+        partsFlows[collectionId].update { parts ->
             parts.map { part ->
-                if (part.id == partId) part.copy(isCurrent = true)
-                else part.copy(isCurrent = false)
+                part.copy(isCurrent = part.id == partId)
+            }
+        }
+        currentParts[collectionId] = partId
+        Logger.d("MainViewModel", "setCurrentPart: $partId")
+        Logger.d("MainViewModel", partsFlows.joinToString { "Part: ${it.value.joinToString { it.isCurrent.toString() }}" })
+    }
+
+    fun toggleUnitSelection(unitId: Int) {
+        unitFlows[currentCollection][currentParts[currentCollection]!!].update { units ->
+            units.map { unit ->
+                if (unit.id == unitId) {
+                    val u = unit.copy(isSelected = !unit.isSelected)
+                    updateSelectedUnitCount(u)
+                    u
+                } else unit
             }
         }
     }
 
-    fun toggleUnitSelection(collectionId: Int, partId: Int, unitId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { unit ->
-                if (unit.id == unitId) unit.copy(isSelected = !unit.isSelected) else unit
-            }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun selectUnit(collectionId: Int, partId: Int, unitId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { unit ->
-                if (unit.id == unitId) unit.copy(isSelected = true) else unit
-            }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun unselectUnit(collectionId: Int, partId: Int, unitId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { unit ->
-                if (unit.id == unitId) unit.copy(isSelected = false) else unit
-            }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun selectAll(collectionId: Int, partId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { it.copy(isSelected = true) }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun clearAll(collectionId: Int, partId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { it.copy(isSelected = false) }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun invertAll(collectionId: Int, partId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { it.copy(isSelected = !it.isSelected) }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun randomSelect(collectionId: Int, partId: Int) {
-        unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.update { units ->
-            val updatedUnits = units.map { it.copy(isSelected = nextBoolean()) }
-            updateSelectedUnitCount(collectionId, partId, updatedUnits)
-            updatedUnits
-        }
-    }
-
-    fun selectAllInCollection(collectionId: Int) {
-        unitFlows.getOrNull(collectionId)?.forEachIndexed { partId, unitsFlow ->
-            unitsFlow.update { units ->
-                val updatedUnits = units.map { it.copy(isSelected = true) }
-                updateSelectedUnitCount(collectionId, partId, updatedUnits)
-                updatedUnits
+    fun selectUnit(unitId: Int) {
+        unitFlows[currentCollection][currentParts[currentCollection]!!].update { units ->
+            units.map { unit ->
+                if (unit.id == unitId && !unit.isSelected) {
+                    val u = unit.copy(isSelected = true)
+                    updateSelectedUnitCount(u)
+                    u
+                } else unit
             }
         }
     }
 
-    fun clearAllInCollection(collectionId: Int) {
-        unitFlows.getOrNull(collectionId)?.forEachIndexed { partId, unitsFlow ->
-            unitsFlow.update { units ->
-                val updatedUnits = units.map { it.copy(isSelected = false) }
-                updateSelectedUnitCount(collectionId, partId, updatedUnits)
-                updatedUnits
+    fun unselectUnit(unitId: Int) {
+        unitFlows[currentCollection][currentParts[currentCollection]!!].update { units ->
+            units.map { unit ->
+                if (unit.id == unitId && unit.isSelected) {
+                    val u = unit.copy(isSelected = false)
+                    updateSelectedUnitCount(u)
+                    u
+                } else unit
             }
         }
     }
 
-    fun isUnitSelected(collectionId: Int, partId: Int, unitId: Int): Boolean {
-        return unitFlows.getOrNull(collectionId)?.getOrNull(partId)?.value?.find { it.id == unitId }?.isSelected ?: false
+    fun isUnitSelected(unitId: Int): Boolean {
+        return unitFlows[currentCollection][currentParts[currentCollection]!!].value.any { it.id == unitId && it.isSelected }
+    }
+
+    fun selectAll() {
+        viewModelScope.launch {
+            unitFlows[currentCollection][currentParts[currentCollection]!!].value.forEach { unit ->
+                selectUnit(unit.id)
+                delay(5L)
+            }
+        }
+    }
+
+    fun clearAll() {
+        viewModelScope.launch {
+            unitFlows[currentCollection][currentParts[currentCollection]!!].value.forEach { unit ->
+                unselectUnit(unit.id)
+                delay(5L)
+            }
+        }
+    }
+
+    fun invertAll() {
+        viewModelScope.launch {
+            unitFlows[currentCollection][currentParts[currentCollection]!!].value.forEach { unit ->
+                toggleUnitSelection(unit.id)
+                delay(5L)
+            }
+        }
+    }
+
+    fun randomSelect() {
+        viewModelScope.launch {
+            unitFlows[currentCollection][currentParts[currentCollection]!!].value.forEach { unit ->
+                if (nextBoolean()) selectUnit(unit.id)
+                else unselectUnit(unit.id)
+                delay(5L)
+            }
+        }
     }
 
     fun getSelectedUnits(): List<SelectedUnit> {
-        return unitFlows.flatMapIndexed { collectionId, parts ->
-            parts.flatMapIndexed { partId, unitsFlow ->
-                unitsFlow.value.filter { it.isSelected }.map { unit ->
+        return unitFlows.flatMapIndexed { collectionIndex, partList ->
+            partList.mapIndexedNotNull { partIndex, unitFlow ->
+                val selectedUnits = unitFlow.value.filter { it.isSelected }
+                if (selectedUnits.isEmpty()) return@mapIndexedNotNull null
+
+                selectedUnits.map {
                     SelectedUnit(
-                        collectionId = collectionId,
-                        partId = partId,
-                        unitId = unit.id
+                        collectionId = collections[collectionIndex].id,
+                        partId = partsFlows[collectionIndex].value[partIndex].id,
+                        unitId = it.id
                     )
                 }
-            }
+            }.flatten()
         }
     }
 
-    private fun updateSelectedUnitCount(collectionId: Int, partId: Int, units: List<UnitUIState>) {
-        val selectedCount = units.count { it.isSelected }
-        partsFlows.getOrNull(collectionId)?.update { parts ->
-            parts.map { part ->
-                if (part.id == partId) {
-                    part.copy(
-                        selectedUnitCount = selectedCount,
-                        isSelected = selectedCount > 0
+    private fun updateSelectedUnitCount(unit: UnitUIState) {
+        val collectionId = unit.collectionId
+        val partId = unit.partId
+
+        val isSelected = unit.isSelected
+
+        partsFlows[collectionId].update { parts ->
+            parts.map {
+                if (it.id == partId) {
+                    val newCount = it.selectedUnitCount + if (isSelected) 1 else -1
+                    it.copy(
+                        selectedUnitCount = newCount,
+                        isSelected = newCount > 0
                     )
-                } else part
+                } else it
             }
         }
+
         _collectionsFlow.update { collections ->
-            collections.map { collection ->
-                if (collection.id == collectionId) {
-                    val totalSelected = partsFlows.getOrNull(collectionId)?.value?.sumOf { it.selectedUnitCount } ?: 0
-                    collection.copy(
-                        selectedUnitCount = totalSelected,
-                        isSelected = totalSelected > 0
+            collections.map {
+                if (it.id == collectionId) {
+                    val newCount = it.selectedUnitCount + if (isSelected) 1 else -1
+                    it.copy(
+                        selectedUnitCount = newCount,
+                        isSelected = newCount > 0
                     )
-                } else collection
+                } else it
             }
         }
-    }
-
-    fun addCollection(collection: CollectionUIState) {
-        _collectionsFlow.update { it + collection }
-        var partId = partsFlows.sumOf { it.value.size }
-        partsFlows.add(
-            MutableStateFlow(
-                List(collection.partCount) {
-                    PartUIState(
-                        id = partId++,
-                        title = "${it + 1}",
-                        collectionId = collection.id,
-                        unitCount = collection.unitCount
-                    )
-                }
-            )
-        )
-        var unitId = unitFlows.sumOf { parts -> parts.sumOf { it.value.size } }
-        unitFlows.add(
-            List(collection.partCount) { partIndex ->
-                MutableStateFlow(
-                    List(collection.unitCount) {
-                        UnitUIState(
-                            id = unitId++,
-                            name = "Unit ${it + 1}",
-                            progress = (0..100).random(),
-                            collectionId = collection.id,
-                            partId = partIndex
-                        )
-                    }
-                )
-            }
-        )
     }
 }

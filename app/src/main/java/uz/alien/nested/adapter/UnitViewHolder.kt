@@ -13,6 +13,7 @@ class UnitViewHolder(
     private val binding = ItemUnitBinding.bind(itemView)
 
     fun bind(unit: UnitUIState) {
+
         binding.tvUnit.text = unit.name
         binding.tvPercent.text = "${unit.progress}%"
         binding.progress.progress = unit.progress

@@ -26,6 +26,7 @@ class NestedScrollableHost(context: Context, attrs: AttributeSet? = null) : Fram
     }
 
   private val child: View? get() = if (isNotEmpty()) getChildAt(0) else null
+  private val isChildRecyclerView = child is SelectableRecyclerView
 
   init {
     touchSlop = ViewConfiguration.get(context).scaledTouchSlop
@@ -68,13 +69,17 @@ class NestedScrollableHost(context: Context, attrs: AttributeSet? = null) : Fram
 
         if (scaledDx > touchSlop || scaledDy > touchSlop) {
           if (isVpHorizontal == (scaledDy > scaledDx)) {
-            parent.requestDisallowInterceptTouchEvent(false)
+            if (isChildRecyclerView) {
+              parent.requestDisallowInterceptTouchEvent(false)
+            }
             parentViewPager?.isUserInputEnabled = false
           } else {
             if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
               parent.requestDisallowInterceptTouchEvent(true)
             } else {
-              parent.requestDisallowInterceptTouchEvent(false)
+              if (isChildRecyclerView) {
+                parent.requestDisallowInterceptTouchEvent(false)
+              }
               parentViewPager?.isUserInputEnabled = false
             }
           }

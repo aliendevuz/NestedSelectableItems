@@ -5,5 +5,5 @@ import uz.alien.nested.model.UnitUIState
 
 class UnitDiffCallback : DiffUtil.ItemCallback<UnitUIState>() {
     override fun areItemsTheSame(old: UnitUIState, new: UnitUIState) = old.id == new.id
-    override fun areContentsTheSame(old: UnitUIState, new: UnitUIState) = old == new
+    override fun areContentsTheSame(old: UnitUIState, new: UnitUIState) = old.isSelected == new.isSelected
 }

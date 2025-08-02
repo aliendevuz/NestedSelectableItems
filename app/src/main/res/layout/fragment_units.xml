@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uz.alien.nested.utils.NestedScrollableHost xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="12dp"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <uz.alien.nested.utils.SelectableRecyclerView
-        android:id="@+id/rvSelectableUnits"
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-</uz.alien.nested.utils.NestedScrollableHost>
+        <uz.alien.nested.utils.NestedScrollableHost
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <uz.alien.nested.utils.SelectableRecyclerView
+                android:id="@+id/rvSelectableUnits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </uz.alien.nested.utils.NestedScrollableHost>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>
