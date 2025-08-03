@@ -1,4 +1,4 @@
-package uz.alien.nested.ui
+package uz.alien.nested.presentation
 
 import android.os.Build
 import android.os.Bundle
@@ -10,9 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uz.alien.nested.adapter.UnitAdapter
+import uz.alien.nested.presentation.adapter.UnitAdapter
 import uz.alien.nested.databinding.FragmentUnitsBinding
-import uz.alien.nested.model.PartUIState
+import uz.alien.nested.presentation.model.PartUIState
 import uz.alien.nested.utils.AutoLayoutManager
 import uz.alien.nested.utils.MarginItemDecoration
 import uz.alien.nested.utils.SelectableRecyclerView

@@ -1,15 +1,14 @@
-package uz.alien.nested.adapter
+package uz.alien.nested.presentation.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import uz.alien.nested.model.CollectionUIState
-import uz.alien.nested.ui.PartsFragment
+import uz.alien.nested.presentation.model.CollectionUIState
+import uz.alien.nested.presentation.PartsFragment
 
 class CollectionsPagerAdapter(
     fa: FragmentActivity,
     private val collections: List<CollectionUIState>
-) : FragmentStateAdapter(fa) {
+) : androidx.viewpager2.adapter.FragmentStateAdapter(fa) {
     override fun getItemCount() = collections.size
     override fun createFragment(position: Int): Fragment {
         return PartsFragment.newInstance(collections[position])

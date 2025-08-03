@@ -1,4 +1,4 @@
-package uz.alien.nested.ui
+package uz.alien.nested.presentation
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,8 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uz.alien.nested.adapter.CollectionAdapter
-import uz.alien.nested.adapter.CollectionsPagerAdapter
+import uz.alien.nested.presentation.adapter.CollectionAdapter
+import uz.alien.nested.presentation.adapter.CollectionsPagerAdapter
 import uz.alien.nested.databinding.ActivityMainBinding
 import uz.alien.nested.utils.AutoLayoutManager
 import uz.alien.nested.utils.Logger

@@ -1,10 +1,10 @@
-package uz.alien.nested.adapter
+package uz.alien.nested.presentation.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import uz.alien.nested.R
 import uz.alien.nested.databinding.ItemUnitBinding
-import uz.alien.nested.model.UnitUIState
+import uz.alien.nested.presentation.model.UnitUIState
 
 class UnitViewHolder(
     itemView: View,

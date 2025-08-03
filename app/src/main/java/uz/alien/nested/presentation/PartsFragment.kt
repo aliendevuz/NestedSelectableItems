@@ -1,4 +1,4 @@
-package uz.alien.nested.ui
+package uz.alien.nested.presentation
 
 import android.os.Build
 import android.os.Bundle
@@ -12,12 +12,11 @@ import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uz.alien.nested.adapter.PartAdapter
-import uz.alien.nested.adapter.PartsPagerAdapter
+import uz.alien.nested.presentation.adapter.PartAdapter
+import uz.alien.nested.presentation.adapter.PartsPagerAdapter
 import uz.alien.nested.databinding.FragmentPartsBinding
-import uz.alien.nested.model.CollectionUIState
+import uz.alien.nested.presentation.model.CollectionUIState
 import uz.alien.nested.utils.AutoLayoutManager
-import uz.alien.nested.utils.Logger
 import uz.alien.nested.utils.MarginItemDecoration
 
 class PartsFragment : Fragment() {

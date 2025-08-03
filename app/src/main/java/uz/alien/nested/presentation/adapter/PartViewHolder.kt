@@ -1,11 +1,11 @@
-package uz.alien.nested.adapter
+package uz.alien.nested.presentation.adapter
 
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import uz.alien.nested.R
 import uz.alien.nested.databinding.ItemPartBinding
-import uz.alien.nested.model.PartUIState
+import uz.alien.nested.presentation.model.PartUIState
 
 class PartViewHolder(
     itemView: View,

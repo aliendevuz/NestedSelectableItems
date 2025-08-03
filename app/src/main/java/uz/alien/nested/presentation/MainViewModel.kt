@@ -1,4 +1,4 @@
-package uz.alien.nested.ui
+package uz.alien.nested.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uz.alien.nested.model.CollectionUIState
-import uz.alien.nested.model.PartUIState
-import uz.alien.nested.model.SelectedUnit
-import uz.alien.nested.model.UnitUIState
+import uz.alien.nested.presentation.model.CollectionUIState
+import uz.alien.nested.presentation.model.PartUIState
+import uz.alien.nested.presentation.model.SelectedUnit
+import uz.alien.nested.presentation.model.UnitUIState
 import uz.alien.nested.utils.Logger
 import kotlin.random.Random.Default.nextBoolean
 

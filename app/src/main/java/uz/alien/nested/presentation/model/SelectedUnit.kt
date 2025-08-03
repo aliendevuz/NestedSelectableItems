@@ -1,4 +1,4 @@
-package uz.alien.nested.model
+package uz.alien.nested.presentation.model
 
 data class SelectedUnit(
     val collectionId: Int,

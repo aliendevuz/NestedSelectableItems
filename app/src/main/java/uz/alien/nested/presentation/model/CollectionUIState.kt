@@ -1,13 +1,13 @@
-package uz.alien.nested.model
+package uz.alien.nested.presentation.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PartUIState(
+data class CollectionUIState(
     val id: Int,
     val title: String,
-    val collectionId: Int,
+    val partCount: Int,
     val unitCount: Int,
     val isSelected: Boolean = false,
     val isCurrent: Boolean = false,

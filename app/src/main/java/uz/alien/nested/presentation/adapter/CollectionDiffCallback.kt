@@ -1,7 +1,7 @@
-package uz.alien.nested.adapter
+package uz.alien.nested.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import uz.alien.nested.model.CollectionUIState
+import uz.alien.nested.presentation.model.CollectionUIState
 
 class CollectionDiffCallback : DiffUtil.ItemCallback<CollectionUIState>() {
     override fun areItemsTheSame(old: CollectionUIState, new: CollectionUIState) = old.id == new.id

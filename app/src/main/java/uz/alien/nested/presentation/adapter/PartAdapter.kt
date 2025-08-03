@@ -1,14 +1,13 @@
-package uz.alien.nested.adapter
+package uz.alien.nested.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import uz.alien.nested.R
-import uz.alien.nested.model.PartUIState
+import uz.alien.nested.presentation.model.PartUIState
 
 class PartAdapter(
     private val onClick: (Int) -> Unit
-) : ListAdapter<PartUIState, PartViewHolder>(PartDiffCallback()) {
+) : androidx.recyclerview.widget.ListAdapter<PartUIState, PartViewHolder>(PartDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PartViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_part, parent, false)

@@ -2,7 +2,6 @@ package uz.alien.nested
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import uz.alien.nested.ui.MainViewModel
+import uz.alien.nested.presentation.MainViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
